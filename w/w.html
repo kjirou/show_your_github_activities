@@ -3,13 +3,56 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <script src="jquery-1.8.3.min.js"></script>
+    <script src="app.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $a.init();
+      });
+    </script>
+    <style type="text/css">
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: helvetica,arial,sans-serif;
+        color: #666;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      a {
+        color: #4183C4;
+        text-decoration: none;
+      }
+      #container {
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+        border-radius: 3px;
+      }
+      #header {
+        padding-left: 4px;
+        height: 24px;
+        line-height: 24px;
+        background-color: #F0F0F0;
+      }
+      #header img {
+        margin: 0;
+        padding: 0;
+        width: 18px;
+        height: 18px;
+        vertical-align: -4px;
+      }
+      #header a {
+        margin-left: 5px;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    Ask him!
-    <!--<script src="js/libs/jquery-1.7.2.min.js"></script>
-    <script src="js/libs/jquery-ui-1.9.1.custom.min.js"></script>
-    <script src="js/libs/handlebars-1.0.0.beta.6.js"></script>
-    <script src="js/libs/ember-1.0.0-pre.2.min.js"></script>
-    <script src="js/app.js"></script>-->
+    <div id="container">
+      <div id="header"><img src="now_printing.png"><a href="#" target="_blank"> </a></div>
+    </div>
   </body>
 </html>

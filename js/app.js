@@ -35,7 +35,6 @@ App.Widget = Ember.Object.extend({
         src += 'width="' + width + '" ';
         src += 'height="' + height + '" ';
         src += 'scrolling="no" ';
-        src += 'bgcolor="silver" '; // Debug
         src += 'frameborder="0" ';
         src += 'marginwidth="0" ';
         src += 'marginheight="0">';
@@ -51,13 +50,13 @@ App.SettingsFormView = Ember.View.extend({
     username: '',
 
     minWidthBinding: Ember.Binding.oneWay('App.widget.minWidth'),
-    widthInput: '120',
+    widthInput: '180',
     width: function(){
         return ~~this.get('widthInput');
     }.property('widthInput'),
 
     minHeightBinding: Ember.Binding.oneWay('App.widget.minHeight'),
-    heightInput: '160',
+    heightInput: '200',
     height: function(){
         return ~~this.get('heightInput');
     }.property('heightInput'),
