@@ -11,9 +11,17 @@ App.Router = Ember.Router.extend({
 });
 
 
-
-
-
+Ember.View.create({
+    templateName: 'widget_code_display',
+    code: '<script>code desu</script>',
+    textareaHtml: function(){
+        // FIXME:
+        //   I wanted to write into template like "<textarea>{{code}}</textarea>",
+        //     but that case, "<script>" marker was included to textarea value
+        var t = '<textarea rows="3">' + Handlebars.Utils.escapeExpression(this.get('code')) + '</textarea>';
+        return new Handlebars.SafeString(t);
+    }.property('code')
+}).appendTo('#widget_container');
 
 
 //App.Story = Ember.Object.extend({
