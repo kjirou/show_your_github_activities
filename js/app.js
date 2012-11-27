@@ -17,9 +17,9 @@ Ember.View.create({
     textareaHtml: function(){
         // FIXME:
         //   I wanted to write into template like "<textarea>{{code}}</textarea>",
-        //     but that case, "<script>" marker was included to textarea value
-        var t = '<textarea rows="3">' + Handlebars.Utils.escapeExpression(this.get('code')) + '</textarea>';
-        return new Handlebars.SafeString(t);
+        //     but this case, "<script>" marker was included to textarea value
+        var s = '<textarea rows="3">' + Handlebars.Utils.escapeExpression(this.get('code')) + '</textarea>';
+        return new Handlebars.SafeString(s);
     }.property('code')
 }).appendTo('#widget_container');
 
