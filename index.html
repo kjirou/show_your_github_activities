@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Show your GitHub activities!</title>
+    <title>Show your GitHub activities</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -12,23 +13,30 @@
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      #widget_display_container iframe {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #widget_source_display_container textarea {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 10px;
+      }
     </style>
-    <!--<link href="css/bootstrap-responsive.min.css" rel="stylesheet">-->
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!--<link rel="shortcut icon" href="../assets/ico/favicon.ico">-->
-    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">-->
-    <!--<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">-->
-    <!--<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">-->
-    <!--<link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <script type="text/x-handlebars" data-template-name="widget_display">
+      {{iframeHtml}}
+    </script>
 
     <script type="text/x-handlebars" data-template-name="widget_source_display">
       {{textareaHtml}}
     </script>
+
   </head>
 
   <body>
@@ -36,17 +44,12 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="./">Show your GitHub activities</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <!--<li class="active"><a href="">Home</a></li>-->
+              <li><a href="https://github.com/kjirou/show_your_github_activities" target="_blank">GitHub</a></li>
+              <li><a href="http://blog.kjirou.net/" target="_blank">Blog</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -58,37 +61,36 @@
       <h1>Show your GitHub activities!</h1>
       <p>Generate widget to show your activities for lazy good neighbors.</p>
 
-    </div>
-
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span4">
-          <div id="settings_form_container">
-          <script type="text/x-handlebars" data-template-name="settings_form_container">
-            <form>
-              <fieldset id="settings_fieldset">
-                <legend>Settings</legend>
-                <label>GitHub username</label>
-                {{view  Ember.TextField valueBinding="username" placeholder="octcat"}}
-                <span class="help-block">https://github.com/<em>{username}</em></span>
-                <label>Width</label>
-                {{view  Ember.TextField valueBinding="widthInput"}}
-                <span class="help-block">The unit is px. More than {{minWidth}}px</span>
-                <label>Height</label>
-                {{view  Ember.TextField valueBinding="heightInput"}}
-                <span class="help-block">The unit is px. More than {{minHeight}}px</span>
-                <button type="submit" class="btn" {{action "submit" on="click"}}>Generate</button>
-              </fieldset>
-            </form>
-          </script>
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div id="settings_form_container">
+            <script type="text/x-handlebars" data-template-name="settings_form">
+              <form>
+                <fieldset id="settings_fieldset">
+                  <legend>Settings</legend>
+                  <label>GitHub username</label>
+                  {{view  Ember.TextField valueBinding="username" placeholder="octcat"}}
+                  <span class="help-block">https://github.com/<em>{username}</em></span>
+                  <label>Width</label>
+                  {{view  Ember.TextField valueBinding="widthInput"}}
+                  <span class="help-block">The unit is px. More than {{minWidth}}px</span>
+                  <label>Height</label>
+                  {{view  Ember.TextField valueBinding="heightInput"}}
+                  <span class="help-block">The unit is px. More than {{minHeight}}px</span>
+                  <button type="submit" class="btn" {{action "submit" on="click"}}>Generate</button>
+                </fieldset>
+              </form>
+            </script>
+            </div>
           </div>
-        </div>
-        <div id="widget_container" class="span4">
-          <div style="position:relative; background-color:gray; margin:0 auto; width:120px; height:80px;">
-              aaaaa
+          <div class="span6">
+            <div id="widget_display_container"></div>
+            <div id="widget_source_display_container"></div>
           </div>
         </div>
       </div>
+
     </div>
 
     <script src="js/libs/jquery-1.7.2.min.js"></script>
