@@ -1,3 +1,7 @@
+var $e = {
+    widgetMediaUrl: 'http://dev.kjirou.net/show_your_github_activities/w'
+};
+
 var App = Ember.Application.create();
 
 App.ApplicationController = Ember.Controller.extend();
@@ -11,16 +15,62 @@ App.Router = Ember.Router.extend({
 });
 
 
+App.widget = Ember.Object.create({
+    source: function(){
+        var h = '';
+        h += '<iframe ';
+        h += 'src="' + $e.widgetMediaUrl + '/w.html?u=kjirou&w=120&h=160" ';
+        h += 'width="' + 120 + '" ';
+        h += 'height="' + 160 + '" ';
+        h += 'scrolling="no" ';
+        h += 'bgcolor="silver" '; // Debug
+        h += 'frameborder="0" ';
+        h += 'marginwidth="0" ';
+        h += 'marginheight="0">';
+        h += '</iframe>';
+        return h;
+    }.property()
+});
+
 Ember.View.create({
-    templateName: 'widget_code_display',
-    code: '<script>code desu</script>',
+    templateName: 'settings_form_container',
+
+    username: '',
+
+    minWidth: 100,
+    widthInput: '120',
+    width: function(){
+        return ~~this.get('widthInput');
+    }.property('widthInput'),
+
+    minHeight: 80,
+    heightInput: '160',
+    height: function(){
+        return ~~this.get('heightInput');
+    }.property('heightInput'),
+
+    submit: function(evt){
+        var username = this.get('username');
+        var width = this.get('width');
+        var height = this.get('height');
+        if (username === '') return false;
+        return false;
+    }
+}).appendTo('#settings_form_container');
+
+Ember.View.create({
+    templateName: 'widget_source_display',
+
+    sourceBinding: Ember.Binding.oneWay('App.widget.source'),
+
     textareaHtml: function(){
         // FIXME:
-        //   I wanted to write into template like "<textarea>{{code}}</textarea>",
+        //   I wanted to write into template like "<textarea>{{source}}</textarea>",
         //     but this case, "<script>" marker was included to textarea value
-        var s = '<textarea rows="3">' + Handlebars.Utils.escapeExpression(this.get('code')) + '</textarea>';
+        var s = '<textarea rows="3" onclick="this.select()">' +
+            Handlebars.Utils.escapeExpression(this.get('source')) + '</textarea>';
         return new Handlebars.SafeString(s);
-    }.property('code')
+    }.property('source')
 }).appendTo('#widget_container');
 
 
