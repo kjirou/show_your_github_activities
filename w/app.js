@@ -20,6 +20,7 @@ $f.parseUrlToParameters = function(url){
 $a.LAST_CACHED_AT_KEY = 'last_cached_at';
 $a.GITHUB_USER_EVENTS_DATA_KEY = 'github_user_events_data';
 $a.CACHE_LIFETIME = 60 * 10 * 1000; // 10 mins
+$a.GITHUB_URL = 'https://github.com';
 $a.GITHUB_API_URL = 'https://api.github.com';
 
 $a.urlParams = $f.parseUrlToParameters(document.URL);
@@ -97,31 +98,78 @@ $a.getAvatarUrl = function(){
 $a.isSuccessedGettingData = function(){
     return !!$a.getAvatarUrl();
 }
-/** ref) http://developer.github.com/v3/activity/events/types/ */
+/**
+ * Create '<li>' for each Github events
+ * ref) http://developer.github.com/v3/activity/events/types/
+ *
+ * Ignored:
+ *   DeleteEvent
+ *   DownloadEvent
+ *   FollowEvent
+ *   ForkApplyEvent
+ *   MemberEvent
+ *   PublicEvent
+ *   TeamAddEvent
+ *   WatchEvent
+ *
+ * @return <li> | null=Ignored type
+ */
 $a.eventDataToListItem = function(eventData){
     console.log(eventData);
 
-    var li = $('<li />');
     // Common
-    //- Date
     var dateString = eventData.created_at;
     var createdAt = Date.create(eventData.created_at);
     var dateText = createdAt.relative();
-    //var isRecent = createdAt.
+    var isRecent = createdAt.addDays(+1).isFuture();
     var dateElement = $('<span class="date" />').text(dateText)
+    if (isRecent) dateElement.addClass('date-color-recent');
 
+    var commentText;
+    var linkText = '';
+    var linkHref = $a.GITHUB_URL;
 
+    // Common mostly
+    //   "GistEvent" don't have repo data, only
+    if (eventData.repo.name !== '/') {
+        linkText = eventData.repo.name.split('/')[1];
+        if (linkText.length > 12) linkText = linkText.slice(0, 12) + '..';
+        linkHref = $a.GITHUB_URL + '/' + eventData.repo.name;
+    }
 
-    //- Comment
-    var commentText = 'Pushed to';
+    // Each type
+    if (
+        eventData.type === 'CommitCommentEvent' ||
+        eventData.type === 'IssueCommentEvent' ||
+        eventData.type === 'PullRequestReviewCommentEvent'
+    ) {
+        commentText = 'Commented on ';
+    } else if (eventData.type === 'CreateEvent') {
+        commentText = 'Created ';
+    } else if (eventData.type === 'ForkEvent') {
+        commentText = 'Forked to ';
+    } else if (eventData.type === 'GistEvent') {
+        commentText = 'Created ';
+        linkText = 'gist:' + eventData.payload.gist.id;
+        linkHref = 'https://gist.github.com/' + eventData.payload.gist.id;
+    } else if (eventData.type === 'GollumEvent') {
+        commentText = 'Edited for ';
+    } else if (eventData.type === 'IssuesEvent') {
+        commentText = 'Opened issue for ';
+    } else if (eventData.type === 'PullRequestEvent') {
+        commentText = 'Pull-Requested to ';
+    } else if (eventData.type === 'PushEvent') {
+        commentText = 'Pushed to ';
+    } else {
+        return null;
+    }
+
     var commentElement = $('<span class="comment" />').text(commentText);
-    //- Link
-    var linkText = 'repo';
-    var linkHref = 'https://github.com';
     var linkElement = $('<a target="_blank" />').text(linkText).attr({
         href: linkHref
     });
 
+    var li = $('<li />');
     li.append(dateElement);
     li.append($('<br />'));
     li.append(commentElement);
@@ -145,19 +193,23 @@ $a.init = function(){
         if ($a.isSuccessedGettingData() === false) return;
 
         $('#header a').attr({
-            href: 'https://github.com/' + $a.githubUsername
+            href: $a.GITHUB_URL + '/' + $a.githubUsername
         }).text($a.githubUsername);
 
         $('#header img').attr('src', $a.getAvatarUrl());
 
         var ul = $('<ul />').appendTo('#activities_container');
-
-        var itemIndex, li = null;
-        for (itemIndex = 0; itemIndex < $a.maxItemCount; itemIndex += 1) {
-            var eventData = $a.githubUserEventsData.data[itemIndex];
-            li = $a.eventDataToListItem(eventData);
-            ul.append(li);
-        }
+        var itemCount = 0;
+        $a.githubUserEventsData.data.each(function(eventData){
+            var li = $a.eventDataToListItem(eventData);
+            if (li !== null) {
+                ul.append(li);
+                itemCount += 1;
+            }
+            if (itemCount >= $a.maxItemCount) {
+                return false;
+            }
+        });
     }).then(function(){
         console.log($a.githubUserEventsData);
     });
