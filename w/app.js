@@ -16,7 +16,28 @@ $f.parseUrlToParameters = function(url){
     };
     return params;
 }
+$f.getBrowser = function(){
+    var browsers = [
+        ['ipad', /iPad/],
+        ['iphone', /iPhone/],
+        ['android', /Android/],
+        ['ie9', /MSIE 9\./],
+        ['ie8', /MSIE 8\./],
+        ['ie7', /MSIE 7\./],
+        ['ie6', /MSIE 6\./],
+        ['chrome', /Chrome/],
+        ['firefox', /Firefox/],
+        ['safari', /Safari/],
+        ['opera', /Opera/]//,
+    ];
+    var i;
+    for (i = 0; i < browsers.length; i++) {
+        if (browsers[i][1].test(window.navigator.userAgent)) return browsers[i][0];
+    };
+    return 'unknown';
+}
 
+// Const variables
 $a.GITHUB_URL = 'https://github.com';
 $a.GITHUB_API_URL = 'https://api.github.com';
 $a.LAST_CACHED_AT_KEY = 'last_cached_at';
@@ -24,6 +45,12 @@ $a.GITHUB_USER_EVENTS_DATA_KEY = 'github_user_events_data';
 $a.CACHE_LIFETIME = 60 * 10 * 1000; // 10 mins
 $a.ALLOWED_LAZY_DAY_COUNT = 7;
 
+// Computed variables
+$a.browser = $f.getBrowser();
+$a.isActive = (function(){
+    var supported = ['chrome', 'safari', 'firefox', 'ie9', 'opera'];
+    return supported.indexOf($a.browser) !== -1;
+}());
 $a.urlParams = $f.parseUrlToParameters(document.URL);
 $a.githubUsername = $a.urlParams.u;
 $a.frameWidth = ~~$a.urlParams.w;
@@ -31,6 +58,7 @@ $a.frameHeight = ~~$a.urlParams.h;
 $a.frameBorderWidth = 1;
 $a.maxItemCount = 5;
 
+// Functions
 $a.adjustStyles = function(size){
     var style = {
         width: size[0] - $a.frameBorderWidth * 2,
@@ -187,6 +215,8 @@ $a.eventDataToListItem = function(eventData){
 
 $a.init = function(){
     $a.adjustStyles([$a.frameWidth, $a.frameHeight]);
+
+    if ($a.isActive === false) return;
 
     $.Deferred().resolve().then(function(){
         var d = $a.loadData();
