@@ -56,7 +56,7 @@ App.SettingsFormView = Ember.View.extend({
     }.property('widthInput'),
 
     minHeightBinding: Ember.Binding.oneWay('App.widget.minHeight'),
-    heightInput: '200',
+    heightInput: '240',
     height: function(){
         return ~~this.get('heightInput');
     }.property('heightInput'),
