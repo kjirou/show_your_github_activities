@@ -258,7 +258,7 @@ $a.init = function(){
             }
         });
     }).then(function(){
-        console.log($a.githubUserEventsData);
+        //console.log($a.githubUserEventsData);
     });
 }
 
