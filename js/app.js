@@ -1,7 +1,3 @@
-var $e = {
-    widgetMediaUrl: 'http://dev.kjirou.net/show_your_github_activities/w'
-};
-
 var App = Ember.Application.create();
 
 App.ApplicationController = Ember.Controller.extend();
