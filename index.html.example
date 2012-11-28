@@ -116,7 +116,7 @@
     <script src="js/libs/ember-1.0.0-pre.2.min.js"></script>
     <script type="text/javascript">
         var $e = {
-            widgetMediaUrl: 'http://dev.kjirou.net/show_your_github_activities/w'
+            widgetMediaUrl: 'http://yoursitehost.com/w'
         };
     </script>
     <script src="js/app.js"></script>
