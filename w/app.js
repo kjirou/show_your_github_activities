@@ -17,11 +17,12 @@ $f.parseUrlToParameters = function(url){
     return params;
 }
 
+$a.GITHUB_URL = 'https://github.com';
+$a.GITHUB_API_URL = 'https://api.github.com';
 $a.LAST_CACHED_AT_KEY = 'last_cached_at';
 $a.GITHUB_USER_EVENTS_DATA_KEY = 'github_user_events_data';
 $a.CACHE_LIFETIME = 60 * 10 * 1000; // 10 mins
-$a.GITHUB_URL = 'https://github.com';
-$a.GITHUB_API_URL = 'https://api.github.com';
+$a.ALLOWED_LAZY_DAY_COUNT = 7;
 
 $a.urlParams = $f.parseUrlToParameters(document.URL);
 $a.githubUsername = $a.urlParams.u;
@@ -29,6 +30,7 @@ $a.frameWidth = ~~$a.urlParams.w;
 $a.frameHeight = ~~$a.urlParams.h;
 $a.frameBorderWidth = 1;
 $a.maxItemCount = 5;
+
 $a.adjustStyles = function(size){
     var style = {
         width: size[0] - $a.frameBorderWidth * 2,
@@ -40,8 +42,8 @@ $a.adjustStyles = function(size){
         border: $a.frameBorderWidth + 'px solid #DDD'
     });
 }
-$a.getGithubUserEventsApiUrl = function(username){
-    return $a.GITHUB_API_URL + '/users/' + username + '/events';
+$a.getGithubUserEventsApiUrl = function(){
+    return $a.GITHUB_API_URL + '/users/' + $a.githubUsername + '/events';
 }
 $a.githubUserEventsData = null;
 $a.getUserEventsCacheData = function(){/** @return obj | null */
@@ -60,7 +62,7 @@ $a.isEnabledCache = function(username){
             userEventsData === null ||
             lastCachedAt + $a.CACHE_LIFETIME < (new Date()).getTime() ||
             userEventsData.data.length === 0 ||
-            username !== userEventsData.data[0].actor.login
+            $a.githubUsername !== userEventsData.data[0].actor.login
         ) {
             return false;
         }
@@ -69,12 +71,12 @@ $a.isEnabledCache = function(username){
 }
 $a.loadData = function(){
     var d = $.Deferred();
-    if ($a.isEnabledCache($a.githubUsername)) {
+    if ($a.isEnabledCache()) {
         $a.githubUserEventsData = $.evalJSON(localStorage.getItem($a.GITHUB_USER_EVENTS_DATA_KEY));
         setTimeout(function(){ d.resolve(); }, 1);
     } else {
         $.ajax(
-            $a.getGithubUserEventsApiUrl($a.githubUsername),
+            $a.getGithubUserEventsApiUrl(),
             { dataType:'jsonp', callback:'callback' }
         ).then(function(data){
             // Wrong username etc
@@ -98,6 +100,11 @@ $a.getAvatarUrl = function(){
 $a.isSuccessedGettingData = function(){
     return !!$a.getAvatarUrl();
 }
+$a.isLazy = function(){
+    if ($a.isSuccessedGettingData() === false) return false;
+    return Date.create($a.githubUserEventsData.data[0].created_at)
+        .addDays($a.ALLOWED_LAZY_DAY_COUNT).isBefore();
+}
 /**
  * Create '<li>' for each Github events
  * ref) http://developer.github.com/v3/activity/events/types/
@@ -115,7 +122,6 @@ $a.isSuccessedGettingData = function(){
  * @return <li> | null=Ignored type
  */
 $a.eventDataToListItem = function(eventData){
-    console.log(eventData);
 
     // Common
     var dateString = eventData.created_at;
@@ -192,11 +198,17 @@ $a.init = function(){
     }).then(function(){
         if ($a.isSuccessedGettingData() === false) return;
 
+        $('#header img').attr('src', $a.getAvatarUrl());
+
         $('#header a').attr({
             href: $a.GITHUB_URL + '/' + $a.githubUsername
         }).text($a.githubUsername);
 
-        $('#header img').attr('src', $a.getAvatarUrl());
+        if ($a.isLazy()) {
+            $('#header').append(
+                $('<span class="is_lazy" />').text('is lazy')
+            );
+        }
 
         var ul = $('<ul />').appendTo('#activities_container');
         var itemCount = 0;
