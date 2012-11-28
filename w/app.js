@@ -1,6 +1,9 @@
-var $e = {};
+var $e = {
+    productionSiteUrl: 'http://syga.kjirou.net'
+};
 var $f = {};
 var $a = {};
+
 (function(){
 
 $f.parseUrlToParameters = function(url){
@@ -215,6 +218,8 @@ $a.eventDataToListItem = function(eventData){
 
 $a.init = function(){
     $a.adjustStyles([$a.frameWidth, $a.frameHeight]);
+
+    $('#visit_site').attr('href', $e.productionSiteUrl);
 
     if ($a.isActive === false) return;
 
