@@ -159,7 +159,7 @@ $a.eventDataToListItem = function(eventData){
         linkText = 'gist:' + eventData.payload.gist.id;
         linkHref = 'https://gist.github.com/' + eventData.payload.gist.id;
     } else if (eventData.type === 'GollumEvent') {
-        commentText = 'Edited for ';
+        commentText = 'Edited wiki for ';
     } else if (eventData.type === 'IssuesEvent') {
         commentText = 'Opened issue for ';
     } else if (eventData.type === 'PullRequestEvent') {

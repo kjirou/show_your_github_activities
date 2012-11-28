@@ -28,7 +28,7 @@ App.Widget = Ember.Object.extend({
         var height = this.get('height');
         var src = '';
         src += '<iframe ';
-        src += 'src="' + $e.widgetMediaUrl + '/w.html';
+        src += 'src="' + $e.widgetMediaUrl + '/i.html';
         src += '?u=' + encodeURIComponent(username);
         src += '&w=' + encodeURIComponent(width);
         src += '&h=' + encodeURIComponent(height) + '" ';
