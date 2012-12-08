@@ -70,6 +70,7 @@ $a.adjustStyles = function(size){
     $('html').css(style);
     $('body').css(style);
     $('#container').css({
+        background: '#FFF',
         border: $a.frameBorderWidth + 'px solid #DDD'
     });
 }
